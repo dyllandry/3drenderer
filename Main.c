@@ -86,6 +86,22 @@ void update(void) {
 
 } 
 
+void draw_grid(void) {
+	uint32_t grey = 0xFF888888;
+	uint32_t black = 0xFF000000;
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			uint32_t pixel_color = black;
+			bool row_is_tenth = (y + 1) % 10 == 0;
+			bool col_is_tenth = (x + 1) % 10 == 0;
+			if (row_is_tenth && col_is_tenth) {
+				pixel_color = grey;
+			}
+			color_buffer[(y * window_width) + x] = pixel_color;
+		}
+	}
+}
+
 void render_color_buffer(void) {
 	SDL_UpdateTexture(
 		color_buffer_texture,
@@ -108,8 +124,9 @@ void render(void) {
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 1);
 	SDL_RenderClear(renderer);
 
+	draw_grid();
+	
 	render_color_buffer();
-
 	clear_color_buffer(0xFFFFFF00);
 
 	SDL_RenderPresent(renderer);
