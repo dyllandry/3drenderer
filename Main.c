@@ -20,6 +20,12 @@ bool initialize_window(void) {
 		return false;
 	}
 
+	// Use SDL to query what is the fullscreen maximum width and height
+	SDL_DisplayMode display_mode;
+	SDL_GetCurrentDisplayMode(0, &display_mode);
+	window_width = display_mode.w;
+	window_height = display_mode.h;
+
 	// Create a SDL Window
 	window = SDL_CreateWindow(
 		NULL,
@@ -40,6 +46,8 @@ bool initialize_window(void) {
 		fprintf(stderr, "Error creating SDL renderer.\n");
 		return false;
 	}
+
+	SDL_SetWindowFullscreen(window, SDL_SetWindowFullscreen);
 
 	return true;
 }
