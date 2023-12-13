@@ -102,6 +102,22 @@ void draw_grid(void) {
 	}
 }
 
+void draw_rect(int rect_x, int rect_y, int rect_width, int rect_height, uint32_t color) {
+	for (int row = 0; row < rect_height; row++) {
+		for (int col = 0; col < rect_width; col++) {
+			int pixel_y = row + rect_y;
+			int pixel_x = col + rect_x;
+			int max_window_y = window_height - 1;
+			int max_window_x = window_width - 1;
+			bool row_offscreen = pixel_y > max_window_y || pixel_y < 0;
+			bool col_offscreen = pixel_x > max_window_x || pixel_y < 0;
+			if (!row_offscreen && !col_offscreen) {
+				color_buffer[((row + rect_y) * window_width) + col + rect_x] = color;
+			}
+		}
+	}
+}
+
 void render_color_buffer(void) {
 	SDL_UpdateTexture(
 		color_buffer_texture,
@@ -125,6 +141,23 @@ void render(void) {
 	SDL_RenderClear(renderer);
 
 	draw_grid();
+
+	// Draw a house
+	int house_offset_x = 500;
+	int house_offset_y = 500;
+	int house_width = 500;
+	int house_height = 300;
+	// House body
+	draw_rect(house_offset_x, house_offset_y, house_width, house_height, 0xFF9e774a);
+	// House door
+	draw_rect(house_offset_x + (house_width / 2) - 50, house_offset_y + (house_height / 3), 100, (house_height / 3) * 2, 0xFFd6984f);
+	// House windows
+	draw_rect(house_offset_x + 50, house_offset_y + (house_height / 3), 100, 100, 0xFF6fe3df);
+	draw_rect(house_offset_x + house_width - 150, house_offset_y + (house_height / 3), 100, 100, 0xFF6fe3df);
+	// House chimney
+	draw_rect(house_offset_x + (house_width / 4), house_offset_y - (house_height / 3), 50, house_height / 3, 0xFF8a3838);
+
+
 	
 	render_color_buffer();
 	clear_color_buffer(0xFFFFFF00);
